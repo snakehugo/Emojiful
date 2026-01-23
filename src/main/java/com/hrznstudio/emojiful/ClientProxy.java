@@ -1,6 +1,5 @@
 package com.hrznstudio.emojiful;
 
-import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.google.gson.JsonElement;
 import com.hrznstudio.emojiful.api.Emoji;
@@ -57,7 +56,7 @@ public class ClientProxy {
         preInitEmojis();
         initEmojis();
         indexEmojis();
-        Emojiful.LOGGER.info("Loaded " + Emojiful.EMOJI_LIST.size() + " emojis");
+        //Emojiful.LOGGER.info("Loaded " + Emojiful.EMOJI_LIST.size() + " emojis");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -91,11 +90,13 @@ public class ClientProxy {
                 ++lineAmount;
             }
         }
+        Emojiful.LOGGER.info("Loaded " + Emojiful.EMOJI_LIST.size() + " emojis");
     }
 
     @SubscribeEvent
     public void render(GuiScreenEvent.DrawScreenEvent.Post event){
-        if (emojiSuggestionHelper != null) emojiSuggestionHelper.render(event.getMatrixStack());
+        if (emojiSuggestionHelper != null)
+            emojiSuggestionHelper.render(event.getMatrixStack());
         if (emojiSelectionGui != null){
             emojiSelectionGui.mouseMoved(event.getMouseX(), event.getMouseY());
             emojiSelectionGui.render(event.getMatrixStack());
@@ -162,7 +163,7 @@ public class ClientProxy {
                 emoji.location = emojiRecipe.getName();
                 emoji.url = emojiRecipe.getUrl();
                 emoji.worldBased = true;
-                System.out.println(emoji.getUrl());
+                //System.out.println(emoji.getUrl());
                 Emojiful.EMOJI_MAP.computeIfAbsent(emojiRecipe.getCategory(), s -> new ArrayList<>()).add(emoji);
                 Emojiful.EMOJI_LIST.add(emoji);
                 if (CATEGORIES.stream().noneMatch(emojiCategory -> emojiCategory.getName().equalsIgnoreCase(emojiRecipe.getCategory()))){
@@ -174,11 +175,14 @@ public class ClientProxy {
     }
 
     private void preInitEmojis() {
-        CATEGORIES.addAll(Arrays.asList("Smileys & Emotion", "Animals & Nature", "Food & Drink", "Activities", "Travel & Places", "Objects", "Symbols", "Flags").stream().map(s -> new EmojiCategory(s, false)).collect(Collectors.toList()));
-        if (EmojifulConfig.getInstance().loadCustom.get())loadCustomEmojis();
+        //CATEGORIES.addAll(Arrays.asList("Smileys & Emotion", "Animals & Nature", "Food & Drink", "Activities", "Travel & Places", "Objects", "Symbols", "Flags").stream().map(s -> new EmojiCategory(s, false)).collect(Collectors.toList()));
+        if (EmojifulConfig.getInstance().loadCustom.get())
+            loadCustomEmojis();
         //loadGithubEmojis();
-        if (EmojifulConfig.getInstance().loadTwemoji.get())loadTwemojis();
-        if (EmojifulConfig.getInstance().profanityFilter.get()) ProfanityFilter.loadConfigs();
+        if (EmojifulConfig.getInstance().loadTwemoji.get())
+            loadTwemojis();
+        if (EmojifulConfig.getInstance().profanityFilter.get())
+            ProfanityFilter.loadConfigs();
     }
 
     private void loadCustomEmojis(){

@@ -37,6 +37,7 @@ public class EmojiSelectionGui implements IDrawableGuiListener  {
     private int openSelectionAreaEmoji;
     private boolean showingSelectionArea;
     private TextFieldWidget fieldWidget;
+    private String catName;
 
     private Rectangle2d openSelectionArea;
     private Rectangle2d selectionArea;
@@ -54,7 +55,11 @@ public class EmojiSelectionGui implements IDrawableGuiListener  {
         this.categoryPointer = 0;
         this.chatScreen = screen;
         this.openSelectionAreaEmoji = -1;
-        if (Emojiful.EMOJI_MAP.containsKey("Smileys & Emotion"))this.openSelectionAreaEmoji = new Random().nextInt(Emojiful.EMOJI_MAP.get("Smileys & Emotion").size());
+        if (!ClientProxy.CATEGORIES.isEmpty()) {
+            int randCateg = new Random().nextInt(ClientProxy.CATEGORIES.size());
+            this.catName = ClientProxy.CATEGORIES.get(randCateg).getName();
+            this.openSelectionAreaEmoji = new Random().nextInt(Emojiful.EMOJI_MAP.get(catName).size());
+        }
         this.showingSelectionArea = false;
         int offset = 0;
         if (ModList.get().isLoaded("quark")) offset = -80;
@@ -71,7 +76,8 @@ public class EmojiSelectionGui implements IDrawableGuiListener  {
 
     @Override
     public void render(MatrixStack stack) {
-        if (this.openSelectionAreaEmoji != -1)Minecraft.getInstance().fontRenderer.drawString(stack, Emojiful.EMOJI_MAP.get("Smileys & Emotion").get(openSelectionAreaEmoji).strings.get(0), openSelectionArea.getX(), openSelectionArea.getY(), 0);
+        if (this.openSelectionAreaEmoji != -1)
+            Minecraft.getInstance().fontRenderer.drawString(stack, Emojiful.EMOJI_MAP.get(this.catName).get(openSelectionAreaEmoji).strings.get(0), openSelectionArea.getX(), openSelectionArea.getY(), 0);
         if (this.showingSelectionArea){
             drawRectangle(stack, this.selectionArea);
             drawRectangle(stack, this.categorySelectionArea);
@@ -186,12 +192,13 @@ public class EmojiSelectionGui implements IDrawableGuiListener  {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+
         if (categorySelectionArea.contains((int)mouseX, (int)mouseY)){
             categoryPointer -= delta;
             categoryPointer = MathHelper.clamp(categoryPointer, 0, ClientProxy.CATEGORIES.size() - 7);
             return true;
         }
-        if (selectionArea.contains((int)mouseX, (int)mouseY)){
+        if (selectionArea.contains((int)mouseX, (int)mouseY)) {
             selectionPointer -= delta;
             selectionPointer = MathHelper.clamp(selectionPointer, 1, Math.max(1, getLineAmount() - 5));
             categoryPointer = MathHelper.clamp(Arrays.asList(ClientProxy.CATEGORIES).indexOf(getCategory(selectionPointer)), 0, ClientProxy.CATEGORIES.size() - 7);

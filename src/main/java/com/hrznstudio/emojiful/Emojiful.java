@@ -40,7 +40,7 @@ public class Emojiful {
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class, EventPriority.NORMAL, false, RegistryEvent.Register.class, this::registerSerializable );
     }
 
-    public static void main(String[] s) throws YamlException {
+    public static void main(String[] s) {
         ClientProxy.PROXY.loadTwemojis();
         //{"code":"at","moji":"🇦🇹","unicode":"1f1e6-1f1f9","category":"symbols","tags":[],"link":null,"base":"at","variants":["at"],"score":0,"r18":false,"customizations":[],"combinations":[]}
     }
